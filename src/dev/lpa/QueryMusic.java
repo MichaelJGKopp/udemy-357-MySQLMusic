@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 public class QueryMusic {
@@ -23,6 +25,8 @@ public class QueryMusic {
       throw new RuntimeException(e);
     }
 
+    String query = "SELECT * FROM music.artists";
+
     var dataSource = new MysqlDataSource();
     dataSource.setServerName(props.getProperty("serverName"));
     dataSource.setPort(Integer.parseInt(props.getProperty("port")));
@@ -30,9 +34,18 @@ public class QueryMusic {
 
     try (var connection = dataSource.getConnection(
       props.getProperty("user"),
-      System.getenv("MySQL_PASS"))
+      System.getenv("MySQL_PASS"));
+      Statement statement = connection.createStatement();
     ) {
-      System.out.println("Success!");
+      ResultSet resultSet = statement.executeQuery(query); // is closed when statement closed
+      // or re-executed or used to retrieve next result from sequence of multiple
+
+      while (resultSet.next()) {
+        System.out.printf("%d %s %n",
+          resultSet.getInt(1),
+          resultSet.getString("artist_name")
+        );
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
