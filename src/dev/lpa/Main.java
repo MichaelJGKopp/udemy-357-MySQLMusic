@@ -1,8 +1,9 @@
 package dev.lpa;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
+
 import javax.swing.*;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -22,9 +23,13 @@ public class Main {
       (okCxl == JOptionPane.OK_OPTION) ? pf.getPassword() : null; // getPassword returns car[]
     // so pw is not saved as string somewhere
 
-    try (Connection connection = DriverManager.getConnection( // will clause automatically later
-      CONN_STRING, username, String.valueOf(password))) {
+    var dataSource = new MysqlDataSource();
+    dataSource.setUrl(CONN_STRING);
 
+//    try (Connection connection = DriverManager.getConnection( // will clause automatically later
+//      CONN_STRING, username, String.valueOf(password))) {
+    try (Connection connection = dataSource.getConnection(username, String.valueOf(password))) {
+      // could use no arguments if datasource gotten by JNDI
       System.out.println("Success!! Connection made to the music database");
       Arrays.fill(password, ' '); // best practice, remove password from memory immediately
     } catch (SQLException e) {
