@@ -23,7 +23,7 @@ public class Main {
       (okCxl == JOptionPane.OK_OPTION) ? pf.getPassword() : null; // getPassword returns car[]
     // so pw is not saved as string somewhere
 
-    var dataSource = new MysqlDataSource();
+    var dataSource = new MysqlDataSource(); // DataSource newer and preferred over DriverManager
 //    dataSource.setUrl(CONN_STRING);
     dataSource.setServerName("localhost");
     dataSource.setPort(3306);
