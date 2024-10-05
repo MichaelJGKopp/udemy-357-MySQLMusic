@@ -24,7 +24,12 @@ public class Main {
     // so pw is not saved as string somewhere
 
     var dataSource = new MysqlDataSource();
-    dataSource.setUrl(CONN_STRING);
+//    dataSource.setUrl(CONN_STRING);
+    dataSource.setServerName("localhost");
+    dataSource.setPort(3306);
+    dataSource.setDatabaseName("music");
+//    dataSource.setUser(username);
+//    dataSource.setPassword(String.valueOf(password));
 
 //    try (Connection connection = DriverManager.getConnection( // will clause automatically later
 //      CONN_STRING, username, String.valueOf(password))) {
