@@ -33,9 +33,10 @@ public class QueryMusic {
     
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter an Artist Id: ");
-    String artistId = scanner.nextLine();  // e.g. album name tapestry
-    String query = "SELECT * FROM music.artists WHERE artist_id=%s" // no '%s'
-                     .formatted(artistId); // ordered by not needed since already ordered by
+    String artistId = scanner.nextLine();
+    int artistID = Integer.parseInt(artistId);
+    String query = "SELECT * FROM music.artists WHERE artist_id=%d" // no '%s'
+                     .formatted(artistID); // ordered by not needed since already ordered by
     // song id
     
     try (var connection = dataSource.getConnection(
