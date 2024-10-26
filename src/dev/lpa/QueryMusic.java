@@ -25,7 +25,9 @@ public class QueryMusic {
       throw new RuntimeException(e);
     }
 
-    String query = "SELECT * FROM music.artists";
+    String albumName = "Tapestry";
+    String query = "SELECT * FROM music.albumview WHERE album_name='%s'"
+                     .formatted(albumName); // ordered by not needed since already ordered by song id
 
     var dataSource = new MysqlDataSource();
     dataSource.setServerName(props.getProperty("serverName"));
@@ -35,15 +37,16 @@ public class QueryMusic {
     try (var connection = dataSource.getConnection(
       props.getProperty("user"),
       System.getenv("MySQL_PASS"));
-      Statement statement = connection.createStatement();
+      Statement statement = connection.createStatement()
     ) {
       ResultSet resultSet = statement.executeQuery(query); // is closed when statement closed
       // or re-executed or used to retrieve next result from sequence of multiple
 
       while (resultSet.next()) {
-        System.out.printf("%d %s %n",
-          resultSet.getInt(1),
-          resultSet.getString("artist_name")
+        System.out.printf("%d %s %s %n",
+          resultSet.getInt("track_number"),
+          resultSet.getString("artist_name"),
+          resultSet.getString("song_title")
         );
       }
     } catch (SQLException e) {
