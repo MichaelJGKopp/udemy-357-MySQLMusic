@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-import java.util.Scanner;
 
 public class QueryMusic {
   
@@ -31,13 +30,15 @@ public class QueryMusic {
     dataSource.setPort(Integer.parseInt(props.getProperty("port")));
     dataSource.setDatabaseName(props.getProperty("databaseName"));
     
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Enter an Artist Id: ");
-    String artistId = scanner.nextLine();
-    int artistID = Integer.parseInt(artistId);
-    String query = "SELECT * FROM music.artists WHERE artist_id=%d" // no '%s'
-                     .formatted(artistID); // ordered by not needed since already ordered by
-    // song id
+//    String query = "SELECT * FROM music.artists limit 10"; // first 10 artists
+    
+    String query = """
+      WITH RankedRows AS (
+                          SELECT *,
+                          ROW_NUMBER() OVER (ORDER BY artist_id) AS row_num
+                          FROM music.artists
+                      )
+                      SELECT * FROM RankedRows WHERE row_num <= 10""";
     
     try (var connection = dataSource.getConnection(
       props.getProperty("user"),
