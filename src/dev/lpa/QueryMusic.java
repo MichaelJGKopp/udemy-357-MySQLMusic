@@ -29,16 +29,20 @@ public class QueryMusic {
     dataSource.setServerName(props.getProperty("serverName"));
     dataSource.setPort(Integer.parseInt(props.getProperty("port")));
     dataSource.setDatabaseName(props.getProperty("databaseName"));
+    try {
+      dataSource.setMaxRows(10);  // same result as limit command
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    String query = "SELECT * FROM music.artists"; // limit 10"; // first 10 artists
     
-//    String query = "SELECT * FROM music.artists limit 10"; // first 10 artists
-    
-    String query = """
-      WITH RankedRows AS (
-                          SELECT *,
-                          ROW_NUMBER() OVER (ORDER BY artist_id) AS row_num
-                          FROM music.artists
-                      )
-                      SELECT * FROM RankedRows WHERE row_num <= 10""";
+//    String query = """
+//      WITH RankedRows AS (
+//                          SELECT *,
+//                          ROW_NUMBER() OVER (ORDER BY artist_id) AS row_num
+//                          FROM music.artists
+//                      )
+//                      SELECT * FROM RankedRows WHERE row_num <= 10""";
     
     try (var connection = dataSource.getConnection(
       props.getProperty("user"),
