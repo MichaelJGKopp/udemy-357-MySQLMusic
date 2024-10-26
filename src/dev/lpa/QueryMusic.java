@@ -32,10 +32,10 @@ public class QueryMusic {
     dataSource.setDatabaseName(props.getProperty("databaseName"));
     
     Scanner scanner = new Scanner(System.in);
-    System.out.println("Enter an Album Name: ");
-    String albumName = scanner.nextLine();  // e.g. album name tapestry
-    String query = "SELECT * FROM music.albumview WHERE album_name='%s'"
-                     .formatted(albumName); // ordered by not needed since already ordered by
+    System.out.println("Enter an Artist Id: ");
+    String artistId = scanner.nextLine();  // e.g. album name tapestry
+    String query = "SELECT * FROM music.artists WHERE artist_id=%s" // no '%s'
+                     .formatted(artistId); // ordered by not needed since already ordered by
     // song id
     
     try (var connection = dataSource.getConnection(
