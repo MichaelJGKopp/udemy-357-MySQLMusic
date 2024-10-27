@@ -21,7 +21,7 @@ public class MusicDML {
     ) {
       String tableName = "music.artists";
       String columnName = "artist_name";
-      String columnValue = "Neil Young";
+      String columnValue = "Bob Dylan";
       if (!executeSelect(statement, tableName, columnName, columnValue)) {
         System.out.println("Maybe we should add this record");
         insertRecord(statement, tableName, new String[]{columnName}, new String[]{columnValue});
@@ -73,7 +73,10 @@ public class MusicDML {
                      .formatted(table, colName, colValues);
     System.out.println(query);
     boolean insertResult = statement.execute(query);
-    System.out.println("insertResult = " + insertResult);
-    return insertResult;
+    int recordsInserted = statement.getUpdateCount(); // NOTE: rows/records affected
+    if (recordsInserted > 0) {
+      executeSelect(statement, table, columnNames[0], columnValues[0]);
+    }
+    return recordsInserted > 0;
   }
 }
