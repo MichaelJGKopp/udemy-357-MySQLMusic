@@ -1,9 +1,6 @@
 package dev.lpa;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class MusicDML {
   
@@ -33,5 +30,27 @@ public class MusicDML {
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  private static boolean printRecords(ResultSet resultSet) throws SQLException {
+    
+    boolean foundData = false;
+    var meta = resultSet.getMetaData();
+    
+    System.out.println("==============================");
+    
+    for (int i = 1; i <= meta.getColumnCount(); i++) {
+      System.out.printf("%-15s", meta.getColumnName(i).toUpperCase());
+    }
+    System.out.println();
+    
+    while (resultSet.next()) {
+      for (int i = 1; i<= meta.getColumnCount(); i++) {
+        System.out.printf("%-15s", resultSet.getString(i));
+      }
+      System.out.println();
+      foundData = true;
+    }
+    return foundData;
   }
 }
