@@ -15,7 +15,7 @@ public class MusicDML {
 //    }
     
     try (Connection connection = DriverManager.getConnection(
-      "jdbc:mysql://localhost:3306/music",
+      "jdbc:mysql://localhost:3306/music?continueBatchOnError=false",
       System.getenv("MYSQL_USER"),
       System.getenv("MYSQL_PASS"));
          Statement statement = connection.createStatement();
