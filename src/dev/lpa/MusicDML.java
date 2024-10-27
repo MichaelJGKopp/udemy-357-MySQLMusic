@@ -53,4 +53,15 @@ public class MusicDML {
     }
     return foundData;
   }
+  
+  private static boolean executeSelect(Statement statement, String table, String columnName,
+                                       String columnValue) throws SQLException {
+    String query = "SELECT * FROM %s WHERE %s='%s'"
+                     .formatted(table, columnName, columnValue);
+    var rs = statement.executeQuery(query);
+    if (rs != null) {
+      return printRecords(rs);
+    }
+    return false;
+  }
 }
