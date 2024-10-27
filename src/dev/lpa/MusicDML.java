@@ -62,4 +62,17 @@ public class MusicDML {
     }
     return false;
   }
+  
+  private static boolean insertRecord(Statement statement, String table, String[] columnNames,
+                                      String[] columnValues) throws SQLException {
+    
+    String colName = String.join(",", columnNames);
+    String colValues = String.join("','", columnValues);
+    String query = "INSERT INTO %s (%s) VALUES ('%s')"
+                     .formatted(table, colName, colValues);
+    System.out.println(query);
+    boolean insertResult = statement.execute(query);
+    System.out.println("insertResult = " + insertResult);
+    return insertResult;
+  }
 }
