@@ -172,7 +172,7 @@ public class MusicDML {
                              .formatted(statement.enquoteLiteral(albumName));
       int deletedSongs = statement.executeUpdate(deleteSongs);
       System.out.printf("Deleted %d rows from music.songs%n", deletedSongs);
-      String deleteAlbums = "DELETE FROM music.albums WHERE album_name = '%s" // FIXME: '%s'
+      String deleteAlbums = "DELETE FROM music.albums WHERE album_name = '%s'"
                               .formatted(albumName);
       int deletedAlbums = statement.executeUpdate(deleteAlbums);
       System.out.printf("Deleted %d rows from music.albums%n", deletedAlbums);
