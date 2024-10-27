@@ -19,14 +19,12 @@ public class MusicDML {
       System.getenv("MYSQL_PASS"));
          Statement statement = connection.createStatement();
     ) {
-      String artist = "Neil Young"; // not in table
-      String query = "SELECT * FROM artists WHERE artist_name ='%s'"
-                       .formatted(artist);
-      boolean result = statement.execute(query);  // returns always true with SELECT
-      System.out.println("result = " + result);
-      var rs = statement.getResultSet();
-      boolean found = (rs != null && rs.next());
-      System.out.println("Artist was " + (found ? "found" : "not found"));
+      String tableName = "music.artists";
+      String columnName = "artist_name";
+      String columnValue = "Elf";
+      if (!executeSelect(statement, tableName, columnName, columnValue)) {
+        System.out.println("Maybe we should add this record");
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
