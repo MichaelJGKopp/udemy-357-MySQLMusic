@@ -5,7 +5,7 @@ import java.sql.*;
 public class MusicDML {
   
   public static void main(String[] args) {
-    
+
 //    // driver before jdbc 4.0, loaded explicitly
 //    try {
 //      Class.forName("com.mysql.jdbc.Driver"); // allows to switch drivers during runtime
@@ -21,10 +21,9 @@ public class MusicDML {
     ) {
       String tableName = "music.artists";
       String columnName = "artist_name";
-      String columnValue = "Elf";
+      String columnValue = "Bob Dylan";
       if (!executeSelect(statement, tableName, columnName, columnValue)) {
-        System.out.println("Maybe we should add this record");
-        insertRecord(statement, tableName, new String[]{columnName}, new String[]{columnValue});
+        insertArtistAlbum(statement, columnValue, columnValue);
       } else {
 //        deleteRecord(statement, tableName, columnName, columnValue);
         updateRecord(statement, tableName, columnName, columnValue,
@@ -48,7 +47,7 @@ public class MusicDML {
     System.out.println();
     
     while (resultSet.next()) {
-      for (int i = 1; i<= meta.getColumnCount(); i++) {
+      for (int i = 1; i <= meta.getColumnCount(); i++) {
         System.out.printf("%-15s", resultSet.getString(i));
       }
       System.out.println();
@@ -111,5 +110,48 @@ public class MusicDML {
       executeSelect(statement, table, updateColumn, updatedValue);
     }
     return recordsUpdated > 0;
+  }
+  
+  private static void insertArtistAlbum(Statement statement, String artistName, String albumName)
+    throws SQLException {
+    
+    String artistInsert = "INSERT INTO music.artists (artist_name) VALUES (%s)"
+                            .formatted(statement.enquoteLiteral(artistName)); // NOTE: use if
+    // supported
+    System.out.println(artistInsert);
+    statement.execute(artistInsert, Statement.RETURN_GENERATED_KEYS);
+    
+    ResultSet rs = statement.getGeneratedKeys();
+    int artistId = (rs != null && rs.next()) ? rs.getInt(1) : -1;
+    // NOTE: if -1 returned you would abort operation, assumed here to be successful
+    String albumInsert = ("INSERT INTO music.albums (album_name, artist_id) " +
+                            "VALUES (%s, %d)")
+                           .formatted(statement.enquoteLiteral(albumName), artistId);
+    System.out.println(albumInsert);
+    statement.execute(albumInsert, Statement.RETURN_GENERATED_KEYS);
+    rs = statement.getGeneratedKeys();
+    int albumId = (rs != null && rs.next()) ? rs.getInt(1) : -1;
+    
+    String[] songs = new String[]{
+      "You're No Good",
+      "Talkin' New York",
+      "In My Time of Dyin'",
+      "Man of Constant Sorrow",
+      "Fixin' to Die",
+      "Pretty Peggy-O",
+      "Highway 51 Blues"
+    };
+    String songInsert = ("INSERT INTO music.songs " +
+                           "(track_number, song_title, album_id) VALUES (%d, %s, %d)");
+    
+    for (int i = 0; i < songs.length; i++) {
+      String query = songInsert.formatted(i + 1, statement.enquoteLiteral(songs[i]), albumId);
+      System.out.println(query);
+      
+      statement.execute(query);
+    }
+    
+    executeSelect(statement, "music.albumview",
+      "album_name", "Bob Dylan");
   }
 }
