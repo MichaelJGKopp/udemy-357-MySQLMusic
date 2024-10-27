@@ -163,6 +163,7 @@ public class MusicDML {
                                         String artistName, String albumName) throws SQLException {
     
     System.out.println("AUTOCOMMIT = " + conn.getAutoCommit());
+    conn.setAutoCommit(false);
     String deleteSongs = """
       
       DELETE FROM music.songs WHERE album_id =
@@ -170,7 +171,7 @@ public class MusicDML {
       .formatted(statement.enquoteLiteral(albumName));
     int deletedSongs = statement.executeUpdate(deleteSongs);
     System.out.printf("Deleted %d rows from music.songs%n", deletedSongs);
-    String deleteAlbums = "DELETE FROM music.albums WHERE album_name = '%s'"
+    String deleteAlbums = "DELETE FROM music.albums WHERE album_name = '%s" // FIXME: '%s'
                             .formatted(albumName);
     int deletedAlbums = statement.executeUpdate(deleteAlbums);
     System.out.printf("Deleted %d rows from music.albums%n", deletedAlbums);
@@ -178,5 +179,7 @@ public class MusicDML {
                             .formatted(artistName);
     int deletedArtists = statement.executeUpdate(deleteArtist);
     System.out.printf("Deleted %d rows from music.artists%n", deletedArtists);
+    conn.commit();
+    conn.setAutoCommit(true);
   }
 }
