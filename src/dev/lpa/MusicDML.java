@@ -21,9 +21,10 @@ public class MusicDML {
     ) {
       String tableName = "music.artists";
       String columnName = "artist_name";
-      String columnValue = "Elf";
+      String columnValue = "Neil Young";
       if (!executeSelect(statement, tableName, columnName, columnValue)) {
         System.out.println("Maybe we should add this record");
+        insertRecord(statement, tableName, new String[]{columnName}, new String[]{columnValue});
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
